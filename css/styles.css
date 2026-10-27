@@ -190,6 +190,11 @@ h1 em, h2 em { color: var(--brown); font-weight: 500; }
 .checkbox-label a { color: var(--brown); text-decoration: underline; }
 .form-submit { width: 100%; }
 .form-message { min-height: 19px; margin: 10px 0 0; color: #426246; font-size: 11px; }
+.form-error { margin: -2px 0 0; color: #a13e31; font-size: 10px; line-height: 1.5; }
+.form-row input[aria-invalid="true"], .form-row select[aria-invalid="true"], .checkbox-label input[aria-invalid="true"] { border-color: #a13e31; }
+.terms-field { margin-bottom: 21px; }
+.terms-field .checkbox-label { margin-bottom: 7px; }
+.terms-field .form-error { margin-left: 23px; }
 
 .site-footer { padding: 68px 0 0; background: var(--brown-dark); color: var(--cream); }
 .footer-main { display: grid; grid-template-columns: 1.3fr .7fr .8fr .9fr; gap: 40px; padding-bottom: 55px; }

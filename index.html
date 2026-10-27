@@ -211,25 +211,31 @@
           <div class="signup-copy"><p class="eyebrow">Your story starts here</p><h2>Let’s make something <em>matter.</em></h2><p>Tell us a little about yourself. Our studio team will be in touch to help you find your fit.</p>
             <div class="signup-detail"><span aria-hidden="true">✳</span><p><strong>Real people, real conversation.</strong><br>Expect a note from our team within two working days.</p></div>
           </div>
-          <form class="signup-form" id="signup-form">
+          <form class="signup-form" id="signup-form" novalidate>
             <div class="form-row">
               <label for="full-name">Full name</label>
-              <input id="full-name" name="name" type="text" autocomplete="name" placeholder="e.g. Nneka Williams" required>
+              <input id="full-name" name="name" type="text" autocomplete="name" placeholder="e.g. Nneka Williams" aria-describedby="name-error" aria-invalid="false" required>
+              <p class="form-error" id="name-error" hidden></p>
             </div>
             <div class="form-row">
               <label for="email">Email address</label>
-              <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+              <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" aria-describedby="email-error" aria-invalid="false" required>
+              <p class="form-error" id="email-error" hidden></p>
             </div>
             <div class="form-row">
               <label for="plan">I'm interested in</label>
-              <select id="plan" name="plan" required>
+              <select id="plan" name="plan" aria-describedby="plan-error" aria-invalid="false" required>
                 <option value="" disabled selected>Choose a plan</option>
                 <option value="basic">Basic — one signature piece</option>
                 <option value="pro">Pro — a wardrobe of favourites</option>
                 <option value="business">Business — for teams and occasions</option>
               </select>
+              <p class="form-error" id="plan-error" hidden></p>
             </div>
-            <label class="checkbox-label"><input type="checkbox" name="terms" required><span>I agree to the <a href="#footer">terms</a> and would love to hear from threadcrown.</span></label>
+            <div class="terms-field">
+              <label class="checkbox-label"><input type="checkbox" name="terms" aria-describedby="terms-error" aria-invalid="false" required><span>I agree to the <a href="#footer">terms</a> and would love to hear from threadcrown.</span></label>
+              <p class="form-error" id="terms-error" hidden></p>
+            </div>
             <button type="submit" class="button button-dark form-submit">Get started <span aria-hidden="true">↗</span></button>
             <p class="form-message" id="form-message" role="status" aria-live="polite"></p>
           </form>

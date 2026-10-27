@@ -147,12 +147,97 @@ const initSignupForm = () => {
 
   if (!signupForm || !formMessage) return;
 
+  const fields = {
+    name: {
+      input: signupForm.elements.name,
+      error: document.querySelector("#name-error"),
+      validate: (value) => value.trim().length >= 2 ? "" : "Please enter at least 2 characters for your name."
+    },
+    email: {
+      input: signupForm.elements.email,
+      error: document.querySelector("#email-error"),
+      validate: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim()) ? "" : "Please enter a valid email address."
+    },
+    plan: {
+      input: signupForm.elements.plan,
+      error: document.querySelector("#plan-error"),
+      validate: (value) => value ? "" : "Please choose a plan."
+    },
+    terms: {
+      input: signupForm.elements.terms,
+      error: document.querySelector("#terms-error"),
+      validate: (value) => value ? "" : "Please agree to the terms to continue."
+    }
+  };
+  let hasSubmitted = false;
+
+  const updateField = (field) => {
+    const value = field.input.type === "checkbox" ? field.input.checked : field.input.value;
+    const errorMessage = field.validate(value);
+    field.input.setAttribute("aria-invalid", String(Boolean(errorMessage)));
+    field.error.textContent = errorMessage;
+    field.error.hidden = !errorMessage;
+    return !errorMessage;
+  };
+
+  Object.values(fields).forEach((field) => {
+    const eventName = field.input.type === "checkbox" || field.input.tagName === "SELECT" ? "change" : "input";
+    field.input.addEventListener(eventName, () => {
+      if (hasSubmitted) updateField(field);
+      formMessage.textContent = "";
+    });
+  });
+
   signupForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    if (!signupForm.reportValidity()) return;
+    hasSubmitted = true;
+    formMessage.textContent = "";
 
-    formMessage.textContent = "Thanks for reaching out! Our studio team will be in touch within two working days.";
+    const isValid = Object.values(fields).reduce((valid, field) => updateField(field) && valid, true);
+    if (!isValid) {
+      Object.values(fields).find((field) => field.input.getAttribute("aria-invalid") === "true").input.focus();
+      return;
+    }
+
+    const email = fields.email.input.value.trim();
+    let signups;
+
+    try {
+      const storedSignups = localStorage.getItem("signups");
+      signups = storedSignups === null ? [] : JSON.parse(storedSignups);
+      if (!Array.isArray(signups)) throw new TypeError("Stored signups must be an array.");
+    } catch {
+      formMessage.textContent = "We couldn't access your saved sign-ups. Please try again.";
+      return;
+    }
+
+    if (signups.some((signup) => signup && typeof signup.email === "string" && signup.email.toLowerCase() === email.toLowerCase())) {
+      formMessage.textContent = "You've already signed up";
+      return;
+    }
+
+    signups.push({
+      name: fields.name.input.value.trim(),
+      email,
+      plan: fields.plan.input.value,
+      createdAt: new Date().toISOString()
+    });
+
+    try {
+      localStorage.setItem("signups", JSON.stringify(signups));
+    } catch {
+      formMessage.textContent = "We couldn't save your sign-up. Please try again.";
+      return;
+    }
+
     signupForm.reset();
+    hasSubmitted = false;
+    Object.values(fields).forEach((field) => {
+      field.input.setAttribute("aria-invalid", "false");
+      field.error.textContent = "";
+      field.error.hidden = true;
+    });
+    formMessage.textContent = "Thanks for reaching out! Our studio team will be in touch within two working days.";
   });
 };
 
